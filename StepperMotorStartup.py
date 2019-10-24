@@ -20,7 +20,7 @@ s0 = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_curr
 s0.get_position_in_units()
 # this tells us that the startup position is currently setup as the "home" position
 
-# move stepper connected to port 0, 5 rotations clockwise
+# move stepper connected to port 2, 5 rotations clockwise
 s0.start_relative_move(5)
 
 # get current position and print it to the screen
@@ -98,7 +98,7 @@ s0.goTo(6400)
 # s0.start_go_to_position()
 # are non blocking and allow you to enter commands on the stepper while the command completes.
 #
-# You may ask yourself why would you ever use the blocking commands? Well here is the deal. MOST motion commands such as:
+# You may ask yourself why would you  use the blocking commands? Well here is the deal. MOST motion commands such as:
 # s0.relative_move()
 # s0.go_to_position()
 # and even

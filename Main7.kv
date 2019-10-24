@@ -1,0 +1,22 @@
+<MainScreen>:
+    name: 'Main7'
+
+    FloatLayout:
+        size_hint: None, None
+
+    DPEAButton:
+        id: turnOnMotorButton
+        text: "On"
+        size: 100, 100
+        x: root.width * 0.6
+        y: root.width * 0.2
+        on_press: root.turnOnMotor(self.text)
+
+    DPEAButton
+        id: changeMotorDirectionButton
+        text: "clockWise"
+        size: 100, 100
+        x: root.width * 0.4
+        y: root.width * 0.2
+        on_press: self.text = root.changeMotorDirection(self.text)
+
