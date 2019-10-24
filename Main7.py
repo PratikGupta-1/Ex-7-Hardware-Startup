@@ -91,7 +91,6 @@ class MainScreen(Screen):
         ###
 
 
-
 Builder.load_file('Main7.kv')
 SCREEN_MANAGER.add_widget(MainScreen(name=MAIN_SCREEN_NAME))
 
