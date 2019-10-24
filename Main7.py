@@ -70,7 +70,7 @@ class MainScreen(Screen):
     def changeMotorDirection(self, val):
         if val == "clockWise":
             global direction
-            direction = 1
+            direction = 0
             #if self.ids.turnOnMotorButton.text == "Off":
                 #self.ids.turnOnMotorButton.text = "Off"
             self.turnOnMotor(self.ids.turnOnMotorButton.text)
@@ -80,7 +80,7 @@ class MainScreen(Screen):
             return "counterClockWise"
         if val == "counterClockWise":
             global direction
-            direction = 0
+            direction = 1
             #if self.ids.turnOnMotorButton.text == "Off":
                 #self.ids.turnOnMotorButton.text = "Off"
             self.turnOnMotor(self.ids.turnOnMotorButton.text)
