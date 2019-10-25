@@ -15,7 +15,7 @@ from kivy.uix.slider import Slider
 from kivy.animation import Animation
 from threading import Thread
 
-from pidev.Joystick import Joystick
+
 
 import spidev
 import os
@@ -23,6 +23,7 @@ from time import sleep
 import RPi.GPIO as GPIO
 from pidev.stepper import stepper
 from Slush.Devices import L6470Registers
+
 spi = spidev.SpiDev()
 
 MIXPANEL_TOKEN = "x"
@@ -32,10 +33,12 @@ SCREEN_MANAGER = ScreenManager()
 MAIN_SCREEN_NAME = 'Main7'
 ADMIN_SCREEN_NAME = 'admin'
 direction = 0
+speed = 0
+s = Slider(min=0, max=500, value=200)
 
-
-s0 = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20,
+s0 = stepper(port=1, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20,
              steps_per_unit=200, speed=8)
+#  Line above:port=1 sets the port
 
 
 class ProjectNameGUI(App):
@@ -58,37 +61,35 @@ class MainScreen(Screen):
 
     def turnOnMotor(self, val):
         global direction
-        speed = 700
-        if val == "On":
+        global speed
+        speed = self.ids.sliderForMotorSpeed.value + 1000
+        # speed = 700
+        if val == "On":  # Run Motor, change text
             s0.run(direction, speed)
             self.ids.turnOnMotorButton.text = "Off"
-        if val == "Off":
+        if val == "Off":  # Stop Motor, change text
             s0.softStop()
             s0.softFree()
             self.ids.turnOnMotorButton.text = "On"
 
     def changeMotorDirection(self, val):
-        if val == "clockWise":
-            global direction
+        if val == "clockWise": # changes text, switches direction
+            global direction  # global dir declared at top
             direction = 0
-            #if self.ids.turnOnMotorButton.text == "Off":
-                #self.ids.turnOnMotorButton.text = "Off"
             self.turnOnMotor(self.ids.turnOnMotorButton.text)
-                #self.ids.turnOnMotorButton.text = "On"
             self.turnOnMotor(self.ids.turnOnMotorButton.text)
-                #self.ids.turnOnMotorButton.text = "On"
             return "counterClockWise"
         if val == "counterClockWise":
             global direction
             direction = 1
-            #if self.ids.turnOnMotorButton.text == "Off":
-                #self.ids.turnOnMotorButton.text = "Off"
             self.turnOnMotor(self.ids.turnOnMotorButton.text)
-                #self.ids.turnOnMotorButton.text = "On"
             self.turnOnMotor(self.ids.turnOnMotorButton.text)
-                #self.ids.turnOnMotorButton.text = "On"
             return "clockWise"
         ###
+
+    def changeSpeed(self, val):
+        if val == "One":
+            global speed
 
 
 Builder.load_file('Main7.kv')
@@ -111,4 +112,3 @@ if __name__ == "__main__":
     # send_event("Project Initialized")
     # Window.fullscreen = 'auto'
     ProjectNameGUI().run()
-

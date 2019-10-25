@@ -20,3 +20,27 @@
         y: root.width * 0.2
         on_press: self.text = root.changeMotorDirection(self.text)
 
+    BoxLayout:
+        Slider:
+            id: sliderForMotorSpeed
+            size: 400, 30
+            size_hint: 0.4, .2
+            min: 0
+            max: 100
+            x: root.width * 0.4
+            y: root.width * 0.3
+            step: 1
+            orientation: 'horizontal'
+
+        Label:
+            text: str(sliderForMotorSpeed.value)
+            x: root.width * 0.06
+            y: root.width * -0.3
+            color: 1, 0.5, 0, 1
+
+#    DPEAButton
+#        id: buttonThatDoesStuff
+#        text: wee
+#        size: 100, 100
+#        x: root.width * 0.2
+#        y: root.width * 0.2
