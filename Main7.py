@@ -15,8 +15,6 @@ from kivy.uix.slider import Slider
 from kivy.animation import Animation
 from threading import Thread
 
-
-
 import spidev
 import os
 from time import sleep
@@ -36,8 +34,10 @@ direction = 0
 speed = 0
 s = Slider(min=0, max=500, value=200)
 
-s0 = stepper(port=1, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20,
-             steps_per_unit=200, speed=8)
+s0 = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20,
+             steps_per_unit=1000, speed=8)
+
+
 #  Line above:port=1 sets the port
 
 
@@ -62,7 +62,7 @@ class MainScreen(Screen):
     def turnOnMotor(self, val):
         global direction
         global speed
-        speed = self.ids.sliderForMotorSpeed.value + 1000
+        speed = self.ids.sliderForMotorSpeed.value
         # speed = 700
         if val == "On":  # Run Motor, change text
             s0.run(direction, speed)
@@ -73,7 +73,7 @@ class MainScreen(Screen):
             self.ids.turnOnMotorButton.text = "On"
 
     def changeMotorDirection(self, val):
-        if val == "clockWise": # changes text, switches direction
+        if val == "clockWise":  # changes text, switches direction
             global direction  # global dir declared at top
             direction = 0
             self.turnOnMotor(self.ids.turnOnMotorButton.text)
@@ -88,8 +88,34 @@ class MainScreen(Screen):
         ###
 
     def changeSpeed(self, val):
-        if val == "One":
+        if val == "Speed1":
             global speed
+            speed = self.ids.sliderForMotorSpeed.value
+            self.turnOnMotor(self.ids.turnOnMotorButton.text)
+            self.turnOnMotor(self.ids.turnOnMotorButton.text)
+            sleep(.1)
+            return "Speed2"
+        # if val == "Speed2":
+        # global speed
+        # speed = self.ids.sliderForMotorSpeed.value
+        # self.turnOnMotor(self.ids.turnOnMotor.text)
+        # self.turnOnMotor(self.ids.turnOnMotor.text)
+        # return "Speed1"
+
+    def start_joy_thread(self):
+        x = Thread(target=self.changeSpeed)
+        x.start()
+
+    def thatDoesStuff(self):
+        # s0.start_relative_move(15)
+        s0.goHome()
+        self.ids.buttonThatDoesStuffLabel.text = str(s0.get_position_in_units)
+
+    def exit_program():
+        s0.free_all()
+        spi.close()
+        GPIO.cleanup()
+        quit()
 
 
 Builder.load_file('Main7.kv')

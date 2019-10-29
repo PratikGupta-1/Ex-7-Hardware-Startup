@@ -1,6 +1,6 @@
 <MainScreen>:
     name: 'Main7'
-
+    on_enter:root.start_joy_thread()
     FloatLayout:
         size_hint: None, None
 
@@ -11,6 +11,7 @@
         x: root.width * 0.6
         y: root.width * 0.2
         on_press: root.turnOnMotor(self.text)
+        on_press: root.changeSpeed(self.text)
 
     DPEAButton
         id: changeMotorDirectionButton
@@ -27,20 +28,44 @@
             size_hint: 0.4, .2
             min: 0
             max: 100
-            x: root.width * 0.4
+            x: root.width * 0
             y: root.width * 0.3
             step: 1
             orientation: 'horizontal'
+            on_touch_move: speed = sliderForMotorSpeed.value
+            on_touch_move: root.turnOnMotor(self)
+
+            #s0.run(direction, sliderForMotorSpeed.value)
 
         Label:
             text: str(sliderForMotorSpeed.value)
-            x: root.width * 0.06
+            font_size: 50
+            x: root.width * 0.2
             y: root.width * -0.3
-            color: 1, 0.5, 0, 1
+            color: 1, 0.7, 0.2, .6
 
-#    DPEAButton
-#        id: buttonThatDoesStuff
-#        text: wee
-#        size: 100, 100
-#        x: root.width * 0.2
-#        y: root.width * 0.2
+    DPEAButton
+        id: exitProgramButton
+        text: "Bye-Bye"
+        size: 100, 100
+        x: root.width * 0.5
+        y: root.width * 0.5
+        on_press: root.exit_program()
+
+
+    DPEAButton
+        id: buttonThatDoesStuff
+        text: "whee"
+        size: 100, 100
+        x: root.width * 0.2
+        y: root.width * 0.2
+        on_press: root.thatDoesStuff()
+
+    Label:
+        id: buttonThatDoesStuffLabel
+        text: "0"
+        x: root.width * 0.3
+        y: root.width * 0.3
+        color: 1, 0.9, 0.5, 1
+
+
