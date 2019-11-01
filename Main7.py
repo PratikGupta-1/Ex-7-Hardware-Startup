@@ -14,7 +14,7 @@ from pidev.kivy import ImageButton
 from kivy.uix.slider import Slider
 from kivy.animation import Animation
 from threading import Thread
-
+import time
 import spidev
 import os
 from time import sleep
@@ -35,8 +35,10 @@ speed = 0
 s = Slider(min=0, max=500, value=200)
 
 s0 = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20,
-             steps_per_unit=1000, speed=8)
+             steps_per_unit=200, speed=8)
 
+
+# if it is 50:1, multiply steps_per_unit by 50
 
 #  Line above:port=1 sets the port
 
@@ -107,9 +109,47 @@ class MainScreen(Screen):
         x.start()
 
     def thatDoesStuff(self):
-        # s0.start_relative_move(15)
+        # print(position)
+
+        position = s0.get_position_in_units()
+        self.ids.buttonThatDoesStuffLabel.text = "Position = " + str(position)
+
+        # t = int(6400 + position)
+
+        s0.set_speed(1)
+        s0.start_relative_move(-15)
+
+        position = s0.get_position_in_units()
+        self.ids.buttonThatDoesStuffLabel.text = "Position = " + str(position)
+        # self.ids.buttonThatDoesStuffLabel.text = str(position)
+
+        time.sleep(10)
+        s0.set_speed(5)
+        s0.start_relative_move(10)
+
+        position = s0.get_position_in_units()
+        self.ids.buttonThatDoesStuffLabel.text = "Position = " + str(position)
+
+        time.sleep(8)
         s0.goHome()
-        self.ids.buttonThatDoesStuffLabel.text = str(s0.get_position_in_units)
+        time.sleep(30)
+
+        position = s0.get_position_in_units()
+        self.ids.buttonThatDoesStuffLabel.text = "Position = " + str(position)
+
+        s0.set_speed(8)
+        s0.start_relative_move(-100)
+
+        position = s0.get_position_in_units()
+        self.ids.buttonThatDoesStuffLabel.text = "Position = " + str(position)
+
+        time.sleep(10)
+        s0.goHome()
+
+        position = s0.get_position_in_units()
+        self.ids.buttonThatDoesStuffLabel.text = "Position = " + str(position)
+
+        # s0.goHome()
 
     def exit_program():
         s0.free_all()
