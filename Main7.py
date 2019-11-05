@@ -21,8 +21,14 @@ from time import sleep
 import RPi.GPIO as GPIO
 from pidev.stepper import stepper
 from Slush.Devices import L6470Registers
+import spidev
+import os
+from time import sleep
+import RPi.GPIO as GPIO
+from pidev.stepper import stepper
 
 spi = spidev.SpiDev()
+from pidev.Cyprus_Commands import Cyprus_Commands_RPi as cyprus
 
 MIXPANEL_TOKEN = "x"
 MIXPANEL = MixPanel("Project Name", MIXPANEL_TOKEN)
@@ -150,6 +156,17 @@ class MainScreen(Screen):
         self.ids.buttonThatDoesStuffLabel.text = "Position = " + str(position)
 
         # s0.goHome()
+
+    def servoMotorBinaryState(self):
+        cyprus.initialize()
+        cyprus.setup_servo(1)
+
+        cyprus.set_servo_position(1, 0)
+        sleep(1)
+        cyprus.set_servo_position(1, 1)
+        sleep(1)
+        cyprus.close()
+        print("done")
 
     def exit_program():
         s0.free_all()
