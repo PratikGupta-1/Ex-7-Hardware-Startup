@@ -74,7 +74,7 @@ for i in range(5, 10, 1):
     sleep(0.5)
 cyprus.set_servo_position(1, 0.5)  # halt the motor
 cyprus.close()  # when done disconnect the RPiMIB communication
-
+# above 0.5 is clockwise, below is counter clock wise
 # To get a Industrial PWM output on P5 to control something like a Cytron Motor Controller do the following:
 cyprus.initialize()  # initialize the RPiMIB and establish communication
 # the following command will set up port 2 (P5) to put out a 100000HZ (100KHz) signal with a 50% high time or duty cycle

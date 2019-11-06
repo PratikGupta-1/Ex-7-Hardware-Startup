@@ -24,7 +24,6 @@ from Slush.Devices import L6470Registers
 import spidev
 import os
 from time import sleep
-import RPi.GPIO as GPIO
 from pidev.stepper import stepper
 
 spi = spidev.SpiDev()
@@ -42,6 +41,7 @@ s = Slider(min=0, max=500, value=200)
 
 s0 = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20,
              steps_per_unit=200, speed=8)
+cyprus.initialize()
 
 
 # if it is 50:1, multiply steps_per_unit by 50
@@ -88,7 +88,7 @@ class MainScreen(Screen):
             self.turnOnMotor(self.ids.turnOnMotorButton.text)
             return "counterClockWise"
         if val == "counterClockWise":
-            global direction
+            # global direction
             direction = 1
             self.turnOnMotor(self.ids.turnOnMotorButton.text)
             self.turnOnMotor(self.ids.turnOnMotorButton.text)
@@ -113,6 +113,13 @@ class MainScreen(Screen):
     def start_joy_thread(self):
         x = Thread(target=self.changeSpeed)
         x.start()
+
+    def exit_program():
+        s0.free_all()
+        spi.close()
+        GPIO.cleanup()
+        cyprus.close()
+        quit()
 
     def thatDoesStuff(self):
         # print(position)
@@ -157,22 +164,74 @@ class MainScreen(Screen):
 
         # s0.goHome()
 
+    # servo functions
     def servoMotorBinaryState(self):
+        cyprus.initialize()
+        cyprus.setup_servo(2)
+
+        while True:
+            if cyprus.read_gpio() & 0b0001:
+                cyprus.set_servo_position(2, 0)
+                sleep(1)
+            else:
+                cyprus.set_servo_position(2, 1)
+                sleep(1)
+
+    def talonDCMotor(self):
         cyprus.initialize()
         cyprus.setup_servo(1)
 
-        cyprus.set_servo_position(1, 0)
-        sleep(1)
         cyprus.set_servo_position(1, 1)
-        sleep(1)
-        cyprus.close()
-        print("done")
+        sleep(5)
+        cyprus.set_servo_position(1, 0.5)
+        sleep(5)
+        cyprus.set_servo_position(1, 0)
+        sleep(5)
+        cyprus.set_servo_position(1, 0.5)
 
-    def exit_program():
-        s0.free_all()
-        spi.close()
-        GPIO.cleanup()
-        quit()
+    def talonDCMotorSpeedUp(self):
+        # cyprus.initialize()
+        cyprus.setup_servo(1)
+        cyprus.set_servo_position(1, 0.5)
+
+        for i in range(60, 100, 1):
+            cyprus.set_servo_position(1, i / 100.0)
+            sleep(0.5)
+
+        cyprus.set_servo_position(1, 0.5)
+
+    def talonDCMotorFullSpeedWhenPressed(self):  # talon motor is in 1 (port 4)
+        cyprus.setup_servo(1)
+        cyprus.set_servo_position(1, 0.5)
+
+        while True:
+            if cyprus.read_gpio() & 0b0001:
+                sleep(0.05)
+                if cyprus.read_gpio() & 0b0001:
+                    cyprus.set_servo_position(1, 0.5)
+            else:
+                cyprus.set_servo_position(1, 1)
+
+    def cytronControllerFN(self):
+        cyprus.setup_servo(1)
+        cyprus.set_servo_position(1, 0.5)
+
+        cyprus.set_pwm_values(1, period_value=100000, compare_value=50000, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+        sleep(5)
+        cyprus.set_pwm_values(1, period_value=100000, compare_value=0, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+        sleep(5)
+
+    def proximitySensorCytronController(self):
+        cyprus.setup_servo(1)
+        cyprus.set_servo_position(1, 0.5)
+
+        while True:
+            if cyprus.read_gpio() & 0b0010:
+                cyprus.set_pwm_values(1, period_value=100000, compare_value=50000,
+                                      compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+            else:
+                cyprus.set_pwm_values(1, period_value=100000, compare_value=0, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+
 
 
 Builder.load_file('Main7.kv')
