@@ -104,7 +104,7 @@ cyprus.close()
 
 # To get the status of a GPIO pin one could create a method like this:
 #     def isGPIO_P6_HIGH(self):
-#         return (cyprus.read_gpio() & 0b0001) == 1
+#         return (cyprus.read_gpio() & 0b0001) == 1 n
 #
 # Checks to see if gpio read and bitwise AND are equal to 1. If so returns TRUE otherwise returns FALSE
 

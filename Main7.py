@@ -214,7 +214,7 @@ class MainScreen(Screen):
 
     def cytronControllerFN(self):
         cyprus.setup_servo(1)
-        cyprus.set_servo_position(1, 0.5)
+        # cyprus.set_servo_position(1, 0.5)
 
         cyprus.set_pwm_values(1, period_value=100000, compare_value=50000, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
         sleep(5)
@@ -223,15 +223,25 @@ class MainScreen(Screen):
 
     def proximitySensorCytronController(self):
         cyprus.setup_servo(1)
-        cyprus.set_servo_position(1, 0.5)
+        # cyprus.set_servo_position(1, 0.5)
+        print("function is working")
 
         while True:
-            if cyprus.read_gpio() & 0b0010:
-                cyprus.set_pwm_values(1, period_value=100000, compare_value=50000,
-                                      compare_mode=cyprus.LESS_THAN_OR_EQUAL)
-            else:
-                cyprus.set_pwm_values(1, period_value=100000, compare_value=0, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+            if cyprus.read_gpio() & 0b0010: # HIGH (True) means not detecting metal
+                sleep(1)
+                if cyprus.read_gpio() & 0b0010:
+                    print("Metal not detected")
+                    cyprus.set_pwm_values(1, period_value=100000, compare_value=50000,
+                                          compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+            if not (cyprus.read_gpio() & 0b0010):
+                sleep(1)
+                if not (cyprus.read_gpio() & 0b0010):
+                    cyprus.set_pwm_values(1, period_value=100000, compare_value=0, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+                    print("Metal detected")
 
+        #while cyprus.read_gpio() & 0b0010:
+            #cyprus.set_pwm_values(1, period_value=100000, compare_value=50000,
+                                  #compare_mode=cyprus.LESS_THAN_OR_EQUAL)
 
 
 Builder.load_file('Main7.kv')
