@@ -171,10 +171,10 @@ class MainScreen(Screen):
 
         while True:
             if cyprus.read_gpio() & 0b0001:
-                cyprus.set_servo_position(2, 0)
+                cyprus.set_servo_position(2, 0)  # close gate
                 sleep(1)
             else:
-                cyprus.set_servo_position(2, 1)
+                cyprus.set_servo_position(2, .7)  # open gate
                 sleep(1)
 
     def talonDCMotor(self):
@@ -227,7 +227,7 @@ class MainScreen(Screen):
         print("function is working")
 
         while True:
-            if cyprus.read_gpio() & 0b0010: # HIGH (True) means not detecting metal
+            if cyprus.read_gpio() & 0b0010:  # HIGH (True) means not detecting metal
                 sleep(1)
                 if cyprus.read_gpio() & 0b0010:
                     print("Metal not detected")
@@ -236,12 +236,13 @@ class MainScreen(Screen):
             if not (cyprus.read_gpio() & 0b0010):
                 sleep(1)
                 if not (cyprus.read_gpio() & 0b0010):
-                    cyprus.set_pwm_values(1, period_value=100000, compare_value=0, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+                    cyprus.set_pwm_values(1, period_value=100000, compare_value=0,
+                                          compare_mode=cyprus.LESS_THAN_OR_EQUAL)
                     print("Metal detected")
 
-        #while cyprus.read_gpio() & 0b0010:
-            #cyprus.set_pwm_values(1, period_value=100000, compare_value=50000,
-                                  #compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+        # while cyprus.read_gpio() & 0b0010:
+        # cyprus.set_pwm_values(1, period_value=100000, compare_value=50000,
+        # compare_mode=cyprus.LESS_THAN_OR_EQUAL)
 
 
 Builder.load_file('Main7.kv')
