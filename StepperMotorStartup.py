@@ -57,7 +57,7 @@ s0.get_position_in_units()
 # This is because by default the SlushEngine leaves the stepper motor stalled or ON so it could hold something
 # mechanical in this position. This is good but it consumes a lot of power, and the motor can get quite hot.
 # so it is best to turn off or free the motor when we dont need it to be held in its current position.
-s0.free
+s0.free()
 # Frees the motor - we can also free all the motors with one command with
 s0.free_all()
 
